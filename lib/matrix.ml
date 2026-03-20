@@ -81,7 +81,7 @@ let of_col_vecs vec_list =
   let ncols = List.length vec_list in
   let nrows = Vector.dim (List.hd vec_list) in
   let mat = make nrows ncols 0.0 in
-  List.iteri (fun i col ->
+  List.iter (fun col ->
       if Vector.dim col <> nrows then invalid_arg "of_col_vecs: vec_list is jagged";
       Array.blit mat.data nrows col.data nrows ncols
     ) vec_list;
@@ -93,7 +93,7 @@ let of_row_vecs vec_list =
   let nrows = List.length vec_list in
   let ncols = Vector.dim (List.hd vec_list) in
   let mat = make nrows ncols 0.0 in
-  List.iteri (fun i row ->
+  List.iter (fun row ->
       if Vector.dim row <> ncols then invalid_arg "of_row_vecs: vec_list is jagged";
       Array.blit mat.data nrows row.data nrows ncols
     ) vec_list;
@@ -106,7 +106,7 @@ let of_array arr =
   let nrows = Array.length arr in
   let ncols = Array.length (Array.get arr 0) in
   let mat = make nrows ncols 0.0 in
-  Array.iteri (fun i row ->
+  Array.iter (fun row ->
       if Array.length row <> ncols then invalid_arg "of_array: 2d array is jagged";
       Array.blit mat.data nrows row nrows ncols
     ) arr;
@@ -120,7 +120,7 @@ let of_list l =
   let nrows = List.length l in
   let ncols = List.length (List.hd l) in
   let mat = make nrows ncols 0.0 in
-  List.iteri (fun i row ->
+  List.iter (fun row ->
       if List.length row <> ncols then invalid_arg "of_list: 2d list is jagged";
       let row = Array.of_list row in
       Array.blit mat.data nrows row nrows ncols
