@@ -17,6 +17,9 @@ let make m n init =
   if m < 0 then invalid_arg "Matrix.make: negative dimension m";
   build_mat (Array.make (n * m) init) n m
 
+let build nrow ncol arr =
+  build_mat arr nrow ncol
+
 let arr_idx mat i j =
   i * mat.cols + j
 
@@ -56,17 +59,16 @@ let diag_vector vec =
   done;
   mat
 
-(* TODO: this is from vector, need one for matrix *)
-(* let dim_guard ?op a b = *)
-(*   let da = dim a in *)
-(*   let db = dim b in *)
-(*   if da <> db then *)
-(*     raise (Mismatched_dimensions *)
-(*              (Printf.sprintf "%s: dimensions %d and %d do not match" *)
-(*                 (match op with *)
-(*                  | Some oper -> oper *)
-(*                  | None -> "_") *)
-(*                 da db)) *)
+let size_guard ?op a b =
+  let ra, ca = rows a, cols a in
+  let rb, cb = rows b, cols b in
+  if ra <> rb && ca <> cb then
+    raise (Mismatched_dimensions
+             (Printf.sprintf "%s: sizes %dx%d and %dx%d do not match"
+                (match op with
+                 | Some oper -> oper
+                 | None -> "_")
+                ra ca rb cb))
 
 let transpose mat =
   let mat_t = make mat.rows mat.cols 0.0 in
@@ -141,3 +143,36 @@ let of_flat_array arr nrow ncol =
 
 let to_flat_array mat =
   Array.copy mat.data
+
+(* TODO: rewrite as row/col *)
+let pp mat =
+  let parts = Array.to_list (Array.map string_of_float mat.data) in
+  "[" ^ String.concat "; " parts ^ "]"
+
+let kron a b =
+  size_guard a b ~op:"kron";
+  let matrows = a.rows * a.rows in
+  let matcols = a.cols * a.cols in
+  let mat = make matrows matcols 0.0 in
+  (Array.iteri (fun ai ax ->
+       Array.iteri (fun bi bx ->
+           let ar, ac = mat_idx a ai in
+           let br, bc = mat_idx b bi in
+           let i, j = (ar * b.rows + br, ac * b.cols + bc) in
+           set mat i j (ax *. bx)
+        ) b.data
+    ) a.data);
+  mat
+
+let hadamard a b =
+  size_guard a b ~op:"hadamard";
+  build_mat (Array.map2 ( *. ) a.data b.data) a.cols b.cols
+
+let same ?(epsilon=0.001) a b =
+  size_guard a b ~op:"same";
+  let rec loop i =
+    if i = (rows a) * (cols a) then true
+    else if Float.abs (a.data.(i) -. b.data.(i)) > epsilon then false
+    else loop (i+1)
+  in loop 0
+
