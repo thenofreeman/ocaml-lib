@@ -3,17 +3,17 @@ open Ocamllib
 
 module VectorTest = struct
   module Make = struct
-    let unary_fold_test ~oper name a result =
-      name >:: (fun _ -> assert_equal ~cmp:Float.equal result (oper a))
-
-    let binary_fold_test ~oper name a b result =
-      name >:: (fun _ -> assert_equal ~cmp:Float.equal result (oper a b))
-
     let unary_oper_test ~oper name a result =
       name >:: (fun _ -> assert_equal ~cmp:Vector.same result (oper a))
 
+    let unary_fold_test ~oper name a result =
+      name >:: (fun _ -> assert_equal ~cmp:Float.equal result (oper a))
+
     let binary_oper_test ~oper name a b result =
       name >:: (fun _ -> assert_equal ~cmp:Vector.same result (oper a b))
+
+    let binary_fold_test ~oper name a b result =
+      name >:: (fun _ -> assert_equal ~cmp:Float.equal result (oper a b))
   end
 
   let invalid_length =
@@ -39,13 +39,13 @@ let test_vec = "vector test suite" >::: [
     (* conversions *)
 
     (* unary operations *)
-    VectorTest.Make.unary_fold_test "sum_equals" ~oper:Vector.sum
-      (Vector.make 3 1.0)
-      3.0;
-
     VectorTest.Make.unary_oper_test "scaled_by_2_equals" ~oper:(Vector.scale 2.0)
       (Vector.make 3 1.0)
       (Vector.make 3 2.0);
+
+    VectorTest.Make.unary_fold_test "sum_equals" ~oper:Vector.sum
+      (Vector.make 3 1.0)
+      3.0;
 
     (* binary operations *)
     VectorTest.Make.binary_oper_test "add_equals" ~oper:Vector.add
