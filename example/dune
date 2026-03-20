@@ -1,0 +1,3 @@
+(executables
+ (names linear_regression)
+ (libraries ocamllib csv))
