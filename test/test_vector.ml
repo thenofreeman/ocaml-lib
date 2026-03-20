@@ -35,9 +35,6 @@ let test_vec = "vector test suite" >::: [
 
     (* operations *)
     "add_equal" >:: TestVector.add_vectors;
-
-
-
   ]
 
 let _ = run_test_tt_main test_vec
