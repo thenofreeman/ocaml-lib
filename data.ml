@@ -6,7 +6,14 @@ module Data = struct
     (x1_2, x2_2, Vector.scale x1x2 Const.sqrt2)
 
   let rbf_kernel ~gamma x1 x2 =
-    sub x1 x2
+    Vector.sub x1 x2
     |> Vector.l2Norm
     |> Vector.map (fun x -> exp (gamma *. x))
+
+  let one_hot_encoding features =
+    let n = List.length features in
+    fst (List.fold_left (fun (acc, i) _ ->
+        let arr = Array.make n 0 in
+        arr.(i) <- 1; (arr :: acc, i+1)
+      ) ([], 0) features)
 end
