@@ -1,0 +1,36 @@
+#+title: OCaml Lib
+
+- Vector
+- Matrix
+- Math
+- Basic Machine Learning
+
+* todo
+
+- BinaryTree
+  - Binary Tree ([[file:code/dsa-ocaml/binary-tree.ml][ocaml]])
+- BTree
+- B+Tree
+- RBTree
+- MTree (nAry Tree?????)
+- Sort
+  - Bubble Sort
+  - Shell Sort
+  - Insertion Sort ([[file:code/dsa-ocaml/insertion_sort.ml][ocaml]])
+  - Selection Sort
+  - Merge Sort
+  - Quicksort ([[file:code/dsa-ocaml/quicksort.ml][ocaml]])
+  - Radix Sort
+- Search-type algos?
+  - Linear Search
+  - Binary Search
+  - Quickselect (ocaml)
+- Stack
+- Queue
+- CircularArray
+- Selection List
+- Doubly-Linked List
+- Array List
+
+mahalanobis_dist
+hamming_dist
