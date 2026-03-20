@@ -74,7 +74,7 @@ let scalar_sub vec k =
 let neg vec =
   map (fun x -> 0.0 -. x) vec
 
-let scale vec k =
+let scale k vec =
   map (fun x -> k *. x) vec
 
 let linearize vec m b =
@@ -148,7 +148,7 @@ let cosine_similarity a b =
 let unit vec =
   let n = l2Norm vec in
   if n = 0.0 then raise Zero_vector;
-  scale vec (1.0 /. n)
+  scale (1.0 /. n) vec
 
 let same ?(epsilon=0.001) a b =
   dim_guard a b ~op:"same";
