@@ -52,7 +52,7 @@ let test_vec = "vector test suite" >::: [
     VectorTest.Make.binary_fold_test "dot_equals" ~oper:Vector.dot
       (Vector.make 3 2.0)
       (Vector.make 3 2.0)
-      12.0
+      12.0;
   ]
 
 let _ = run_test_tt_main test_vec

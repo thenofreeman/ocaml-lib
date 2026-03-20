@@ -1,15 +1,19 @@
-let quad_kernel x1 x2 =
-  let x1x2 = (Vector.dot x1 x2) in
-  let x1_2 = (Vector.dot x1 x1) in
-  let x2_2 = (Vector.dot x2 x2) in
-  (x1_2, x2_2, x1x2 *. Const.sqrt2)
+module Feat = struct
+  let quad_kernel x1 x2 =
+    let x1x2 = (Vector.dot x1 x2) in
+    let x1_2 = (Vector.dot x1 x1) in
+    let x2_2 = (Vector.dot x2 x2) in
+    (x1_2, x2_2, x1x2 *. Const.sqrt2)
 
-let rbf_kernel ~gamma x1 x2 =
-  exp (gamma *. (Vector.sub x1 x2 |> Vector.l2Norm))
+  let rbf_kernel ~gamma x1 x2 =
+    exp (gamma *. (Vector.sub x1 x2 |> Vector.l2Norm))
+end
 
-let one_hot_encoding features =
-  let n = List.length features in
-  fst (List.fold_left (fun (acc, i) _ ->
-      let arr = Array.make n 0 in
-      arr.(i) <- 1; (arr :: acc, i+1)
-    ) ([], 0) features)
+module Encode = struct
+  let one_hot features =
+    let n = List.length features in
+    fst (List.fold_left (fun (acc, i) _ ->
+        let arr = Array.make n 0 in
+        arr.(i) <- 1; (arr :: acc, i+1)
+      ) ([], 0) features)
+end
