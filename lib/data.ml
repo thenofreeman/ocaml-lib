@@ -38,4 +38,12 @@ module Manip = struct
 
   (* some sort of bucketing based off a distribution? etc *)
   (* let bucket_dist features xxxx = () *)
+
+  let discretize xs steps =
+    Vector.map (fun x ->
+        List.fold_left (fun min s ->
+            if x -. s > x -. min then min
+            else x
+          ) (List.hd steps) steps
+      ) xs
 end

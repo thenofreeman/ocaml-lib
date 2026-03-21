@@ -31,3 +31,29 @@ module Model = struct
 
   (* let fit_logistic_regression ?(solver=batch_grad) xs ys = () *)
 end
+
+module Assess = struct
+  let precision conf =
+    let tp, _, fp, _ = conf in
+    tp /. (tp +. fp)
+
+  let recall conf =
+    let tp, fn, _, _ = conf in
+    tp /. (tp +. fn)
+
+  let accuracy conf =
+    let tp, fn, fp, tn = conf in
+    let t, f = (tp +. tn, fp +. fn) in
+    t /. (t +. f)
+
+  let fpr conf =
+    let _, _, fp, tn = conf in
+    fp /. (fp +. tn)
+
+  (* TODO: area under the roc curve *)
+  (* requires differentiation *)
+  (* let auc conf = () *)
+
+  (* aliases *)
+  let tpr conf = recall conf
+end
