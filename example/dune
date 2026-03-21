@@ -1,3 +1,6 @@
 (executables
- (names linear_regression)
+ (names
+   linear_regression
+   knn_simple
+   knn_mnist)
  (libraries ocamllib csv))

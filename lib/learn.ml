@@ -32,10 +32,10 @@ module Model = struct
 
   let k_nearest_neighbors ?(metric=Vector.l2Norm) features labels q k =
     let dists_with_idx = Matrix.mapi_rows (fun i x ->
-        (metric (Vector.scalar_sub x q), i)
+        (metric (Vector.sub x q), i)
       ) features in
     let k_nearest = Array.sub (
-        Array.of_list (List.rev (List.sort (fun (a, _) (b, _) -> Float.compare a b) dists_with_idx))
+        Array.of_list (List.sort (fun (a, _) (b, _) -> Float.compare a b) dists_with_idx)
       ) 0 k in
 
     let k_labels = Array.map (fun (_, i) ->
