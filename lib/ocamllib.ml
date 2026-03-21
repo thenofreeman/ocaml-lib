@@ -5,4 +5,5 @@ module Const = Const
 module Learn = Learn
 module Math = Math
 module Algo = Algo
+module Stat = Stat
 (* module Data_frame = Data_frame *)

@@ -1,4 +1,4 @@
-module Feat = struct
+module Manip = struct
   let quad_kernel x1 x2 =
     let x1x2 = (Vector.dot x1 x2) in
     let x1_2 = (Vector.dot x1 x1) in
@@ -13,9 +13,12 @@ module Feat = struct
     let min = Vector.min xs in
     let range = (max -. min) in
     Vector.map (fun x -> (x -. min) /. range) xs
-end
 
-module Encode = struct
+  let standardize xs =
+    let mean = Stat.mean xs in
+    let std_dev = Stat.std_dev xs in
+    Vector.map (fun x -> (x -. mean) /. std_dev) xs
+
   let one_hot features =
     let n = List.length features in
     fst (List.fold_left (fun (acc, i) _ ->
