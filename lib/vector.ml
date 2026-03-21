@@ -105,6 +105,10 @@ let max vec =
   if dim vec = 0 then invalid_arg "max: empty vector";
   fold_left Float.max (get vec 0) vec
 
+let min vec =
+  if dim vec = 0 then invalid_arg "min: empty vector";
+  fold_left Float.min (get vec 0) vec
+
 let arg_max vec =
   if dim vec = 0 then invalid_arg "arg_max: empty vector";
   let arg_max_helper (max_v, i, max_i) x =

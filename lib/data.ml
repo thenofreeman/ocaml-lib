@@ -7,6 +7,12 @@ module Feat = struct
 
   let rbf_kernel ~gamma x1 x2 =
     exp (gamma *. (Vector.sub x1 x2 |> Vector.l2Norm))
+
+  let normalize xs =
+    let max = Vector.max xs in
+    let min = Vector.min xs in
+    let range = (max -. min) in
+    Vector.map (fun x -> (x -. min) /. range) xs
 end
 
 module Encode = struct
@@ -24,8 +30,8 @@ module Encode = struct
              match List.find_opt (fun p -> cmp x p) partitions with
              | None -> n
              | Some p -> p
-           )
-        ) features
+           ) features
+        )
 
   (* some sort of bucketing based off a distribution? etc *)
   (* let bucket_dist features xxxx = () *)
