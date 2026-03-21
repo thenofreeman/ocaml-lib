@@ -1,19 +1,19 @@
-type 'a t = {
-  data : 'a array;
-  rows : int;
-  cols : int
-}
+(* type 'a t = { *)
+(*   data : 'a array; *)
+(*   rows : int; *)
+(*   cols : int *)
+(* } *)
 
-let of_list l =
-  let nrows = List.length l in
-  let ncols = List.length (List.hd l) in
-  let mat = Matrix.make nrows ncols 0.0 in
-  List.iter (fun row ->
-      if List.length row <> ncols then invalid_arg "of_matrix: data_frame is jagged";
-      let row = Array.of_list (List.map (fun x -> Float.of_string x) row) in
-      Array.blit mat.data nrows row nrows ncols
-    ) l;
-  mat
+(* let of_list l = *)
+(*   let nrows = List.length l in *)
+(*   let ncols = List.length (List.hd l) in *)
+(*   let mat = Matrix.make nrows ncols 0.0 in *)
+(*   List.iter (fun row -> *)
+(*       if List.length row <> ncols then invalid_arg "of_matrix: data_frame is jagged"; *)
+(*       let row = Array.of_list (List.map (fun x -> Float.of_string x) row) in *)
+(*       Array.blit mat.data nrows row nrows ncols *)
+(*     ) l; *)
+(*   mat *)
 
 (* TODO *)
 (* let of_matrix mat = () *)

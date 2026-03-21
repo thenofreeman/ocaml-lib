@@ -118,26 +118,6 @@ let of_array arr =
 (* let to_array mat = *)
 (*   let arr_mat Array.make_matrix mat.rows mat.cols 0.0 in () *)
 
-let of_list l =
-  let nrows = List.length l in
-  let ncols = List.length (List.hd l) in
-  let mat = make nrows ncols 0.0 in
-  List.iter (fun row ->
-      if List.length row <> ncols then invalid_arg "of_list: 2d list is jagged";
-      let row = Array.of_list row in
-      Array.blit mat.data nrows row nrows ncols
-    ) l;
-  mat
-
-(* TODO *)
-(* let to_list mat = () *)
-
-let of_flat_list l nrow ncol =
-  build_mat (Array.of_list l) nrow ncol
-
-let to_flat_list mat =
-  Array.to_list mat
-
 let of_flat_array arr nrow ncol =
   build_mat (Array.copy arr) nrow ncol
 
