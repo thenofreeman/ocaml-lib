@@ -1,3 +1,6 @@
 (tests
- (names test_vector test_matrix)
+ (names
+   test_vector
+   test_matrix
+   test_sort)
  (libraries ounit2 ocamllib))
