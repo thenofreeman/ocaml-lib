@@ -30,9 +30,11 @@ module Model = struct
   let fit_linear_regression ~solver xs ys =
     solver xs ys
 
-  let k_nearest_neighbors ?(metric=Vector.l2Norm) features labels q k =
+  let k_nearest_neighbors
+      ?(metric=fun a b -> Vector.l2Norm (Vector.sub a b))
+      features labels q k =
     let dists_with_idx = Matrix.mapi_rows (fun i x ->
-        (metric (Vector.sub x q), i)
+        (metric x q, i)
       ) features in
     let k_nearest = Array.sub (
         Array.of_list (List.sort (fun (a, _) (b, _) -> Float.compare a b) dists_with_idx)
