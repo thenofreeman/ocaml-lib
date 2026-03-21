@@ -32,6 +32,12 @@ let get mat i j =
 let set mat i j x =
   mat.data.(arr_idx mat i j) <- x
 
+let get_row mat i =
+  Vector.build (Array.sub mat.data (i * mat.cols) mat.cols)
+
+let get_col mat j =
+  Vector.build (Array.init mat.rows (fun i -> get mat i j))
+
 let rows mat =
   mat.rows
 
