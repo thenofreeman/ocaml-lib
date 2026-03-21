@@ -3,13 +3,14 @@ module Solver = struct
     Vector.dim_guard xs ys ~op:"gradient_descent";
 
     let n = Float.of_int (Vector.dim xs) in
+    let alpha_n = alpha /. n in
 
     let update w b =
       let dl_dw' = Vector.map2_sum (dl_dw w b) xs ys in
       let dl_db' = Vector.map2_sum (dl_db w b) xs ys in
 
-      let w, b = (w -. (1.0 /. n) *. dl_dw' *. alpha,
-                  b -. (1.0 /. n) *. dl_db' *. alpha)
+      let w, b = (w -. alpha_n *. dl_dw',
+                  b -. alpha_n *. dl_db')
       in (w, b)
     in
 
