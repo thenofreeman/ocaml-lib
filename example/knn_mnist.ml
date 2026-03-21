@@ -77,14 +77,19 @@ let () =
       "sample_data/mnist/t10k-labels.idx1-ubyte"
   in
 
-  Random.self_init ();
-  (* let rand_image_idx = Random.int (Matrix.rows x_train) in *)
-  let rand_image_idx = Random.int 100 in
+  let n_correct = ref 0 in
 
-  let query = Matrix.get_row x_test rand_image_idx in
-  let actual = Vector.get y_test rand_image_idx in
+  (* uses a bad example with k=50 to demostrate some failures *)
 
-  let prediction = Learn.Model.k_nearest_neighbors
-                     x_train y_train query 3 in
+  let n = 10 in
+  for i = 0 to n-1 do
+    let query = Matrix.get_row x_test i in
+    let actual = Vector.get y_test i in
+    let prediction = Learn.Model.k_nearest_neighbors
+                        x_train y_train query 50 in
 
-  Printf.printf "%f -- %f\n" prediction actual
+    Printf.printf "%.0f -- %.0f\n%!" prediction actual;
+    if Float.equal prediction actual then
+      n_correct := !n_correct + 1
+  done;
+  Printf.printf "Accuracy: %.2f%%\n" Float.(of_int !n_correct /. of_int n)
