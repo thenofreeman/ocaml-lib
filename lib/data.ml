@@ -16,4 +16,17 @@ module Encode = struct
         let arr = Array.make n 0 in
         arr.(i) <- 1; (arr :: acc, i+1)
       ) ([], 0) features)
+
+  let bucket_partition ?(cmp=( < )) features partitions =
+    let n = List.length partitions in
+    Array.of_list
+        (List.map (fun x ->
+             match List.find_opt (fun p -> cmp x p) partitions with
+             | None -> n
+             | Some p -> p
+           )
+        ) features
+
+  (* some sort of bucketing based off a distribution? etc *)
+  (* let bucket_dist features xxxx = () *)
 end
