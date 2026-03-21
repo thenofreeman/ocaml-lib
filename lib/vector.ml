@@ -14,6 +14,9 @@ let make n init =
   if n < 0 then invalid_arg "Vector.make: negative dimension";
   build_vec (Array.make n init)
 
+let build arr =
+  build_vec arr
+
 let get vec i =
   vec.data.(i)
 
@@ -161,6 +164,9 @@ let same ?(epsilon=0.001) a b =
     else if Float.abs ((get a i) -. (get b i)) > epsilon then false
     else loop (i+1)
   in loop 0
+
+let iter f vec =
+  Array.iter f vec.data
 
 let pp vec =
   let parts = Array.to_list (Array.map string_of_float vec.data) in

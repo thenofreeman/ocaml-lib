@@ -30,7 +30,21 @@ module Model = struct
   let fit_linear_regression ~solver xs ys =
     solver xs ys
 
-  (* let fit_logistic_regression ?(solver=batch_grad) xs ys = () *)
+  let k_nearest_neighbors ?(metric=Vector.l2Norm) features labels q k =
+    let dists_with_idx = Matrix.mapi_rows (fun i x ->
+        (metric (Vector.scalar_sub x q), i)
+      ) features in
+    let k_nearest = Array.sub (
+        Array.of_list (List.rev (List.sort (fun (a, _) (b, _) -> Float.compare a b) dists_with_idx))
+      ) 0 k in
+
+    let k_labels = Array.map (fun (_, i) ->
+        Vector.get labels i
+      ) k_nearest in
+
+    Stat.mode (Vector.build k_labels)
+
+  (* let fit_logistic_regression ~solver xs ys = () *)
 end
 
 module Assess = struct

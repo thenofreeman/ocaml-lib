@@ -89,7 +89,17 @@ let of_col_vecs vec_list =
     ) vec_list;
   transpose mat
 
-(* let to_col_vecs mat = () *)
+let to_col_vecs mat =
+  let rec build_cols j acc =
+    if j >= mat.rows then List.rev acc
+    else
+      let col = Array.init mat.rows (fun i ->
+          get mat i j
+        ) in
+      let vec = Vector.build col in
+      build_cols (j + 1) (vec :: acc)
+  in
+  build_cols 0 []
 
 let of_row_vecs vec_list =
   let nrows = List.length vec_list in
@@ -101,8 +111,15 @@ let of_row_vecs vec_list =
     ) vec_list;
   mat
 
-(* TODO *)
-(* let to_row_vecs mat = () *)
+let to_row_vecs mat =
+  let rec build_rows i acc =
+    if i >= mat.rows then List.rev acc
+    else
+      let row = Array.sub mat.data (i * mat.cols) mat.cols in
+      let vec = Vector.build row in
+      build_rows (i + 1) (vec :: acc)
+  in
+  build_rows 0 []
 
 let of_array arr =
   let nrows = Array.length arr in
@@ -156,3 +173,14 @@ let same ?(epsilon=0.001) a b =
     else loop (i+1)
   in loop 0
 
+let map_rows f mat =
+  List.map f (to_row_vecs mat)
+
+let mapi_rows f mat =
+  List.mapi f (to_row_vecs mat)
+
+let map_cols f mat =
+  List.map f (to_col_vecs mat)
+
+let mapi_cols f mat =
+  List.mapi f (to_col_vecs mat)
