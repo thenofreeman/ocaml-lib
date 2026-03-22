@@ -1,12 +1,11 @@
 (* vector.mli *)
 
-type t
-(* type u_reduction = t -> float *)
-(* type u_transform = t -> ?ip -> t *)
-(* type b_reduction = t -> float *)
+type t = Lacaml.D.vec
 (* type b_transform = t -> ?ip -> t -> t *)
+(* type b_reduction = t -> float *)
+(* type u_transform = t -> ?ip -> t *)
+(* type u_reduction = t -> float *)
 
-val from : float array -> t
 val create : int -> t
 val make : int -> float -> t
 val init : int -> (int -> float) -> t
@@ -15,39 +14,60 @@ val empty : t
 val random : ?range:float*float -> int -> t
 
 val get : t -> int -> float
-val set : t -> int -> t
+val set : t -> int -> float -> t
 
 val dim : t -> int
 val is_empty : t -> bool
 
-val linspace : float -> float -> int -> t -> t
-val logspace : float -> float -> int -> t -> t
+val linspace : ?v:t -> float -> float -> int -> t
+val logspace : ?v:t -> float -> float -> int -> t
 
 val of_array : float array -> t
-val to_array : t -> float list
+val to_array : t -> float array
 
 val of_list : float list -> t
 val to_list : t -> float list
 
-val same : ?eps:float -> t -> t -> bool
-
 val append : t -> t -> t
 val concat : t list -> t
 
-val map : (float -> float) -> ?ip:bool -> t -> t
-val map2 : (float -> float) -> t -> t -> t
 val iter : (float -> unit) -> t -> unit
-val iter2 : (float -> unit) -> t -> t -> unit
 val iteri : (int -> float -> unit) -> t -> unit
-val iter2i : (int -> float -> unit) -> t -> t -> unit
+val map : (float -> float) -> ?v:t -> t -> t
 val fold : ('a -> float -> 'a) -> 'a -> t -> 'a
-val fold2 : ('a -> float -> 'a) -> 'a -> t -> t -> 'a
+val for_all : (float -> bool) -> t -> bool
+
+val iter2 : (float -> float -> unit) -> t -> t -> unit
+val iter2i : (int -> float -> float -> unit) -> t -> t -> unit
+val map2 : (float -> float -> float) -> ?v:t -> t -> t -> t
+val fold2 : ('a -> float -> float -> 'a) -> 'a -> t -> t -> 'a
+val for_all2 : (float -> float -> bool) -> t -> t -> bool
+
+val same : ?eps:float -> t -> t -> bool
 
 val rev : t -> t
-val sort : ?cmp:(float -> float -> int) -> ?ip:bool -> t -> t
+val sorted : ?cmp:(float -> float -> int) -> ?v:t -> t -> t
 
 val arg_min : t -> int
 val arg_max : t -> int
+
+(* binary transforms *)
+val add : ?v:t -> t -> t -> t
+val sub : ?v:t -> t -> t -> t
+val mult : ?v:t -> t -> t -> t
+val div : ?v:t -> t -> t -> t
+
+(* binary reductions *)
+val dot : t -> t -> float
+
+(* unary transforms *)
+val scale : ?v:t -> t -> float -> t
+val recip : ?v:t -> t -> t
+val scalar_add: ?v:t -> t -> float -> t
+val scalar_sub: ?v:t -> t -> float -> t
+val neg : ?v:t -> t -> t
+val abs : ?v:t -> t -> t
+val sign : ?v:t -> t -> t
 
 (* unary reductions *)
 val min : t -> float
@@ -57,26 +77,13 @@ val prod : t -> float
 val l1_norm : t -> float
 val l2_norm : t -> float
 val chebyshev_norm : t -> float
-val minkowski_norm : t -> float
+val minkowski_norm : t -> float -> float
 
-(* unary transforms *)
-val recip : t -> ?ip:bool -> t
-val scale : t -> ?ip:bool -> float -> t
-val scalar_add: t -> ?ip:bool -> float -> t
-val scalar_sub: t -> ?ip:bool -> float -> t
-val neg : t -> ?ip:bool -> t
-val abs : t -> ?ip:bool -> t
-val sign : t -> ?ip:bool -> t
-val unit_vec : t -> ?ip:bool -> t
+val normalize : ?v:t -> t -> t
 
-(* binary reductions *)
-val dot : t -> t -> float
-
-(* binary transforms *)
-val add : t -> ?ip:bool -> t -> t
-val sub : t -> ?ip:bool -> t -> t
-val mult : t -> ?ip:bool -> t -> t
-val div : t -> ?ip:bool -> t -> t
+val linearize : ?v:t -> t -> float -> float -> t
+val cross3d : t -> t -> t
+val cosine_similarity : t -> t -> float
 
 (* io *)
 val pp : t -> unit
