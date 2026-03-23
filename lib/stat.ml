@@ -4,7 +4,7 @@ let mean xs =
 
 let std_dev xs =
   let mean = mean xs in
-  Vector.l2Norm (Vector.scalar_sub xs mean)
+  Vector.l2_norm (Vector.scalar_sub xs mean)
     /. sqrt (Float.of_int (Vector.dim xs - 1))
 
 let mode xs =

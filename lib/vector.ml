@@ -194,7 +194,7 @@ let div ?v x y =
 let dot x y =
   Ld.dot x y
 
-let scale ?v x k =
+let scale ?v k x =
   match v with
   | None ->
     let result = create (dim x) in
@@ -262,8 +262,8 @@ let minkowski_norm x p =
 
 let normalize ?v x =
   match v with
-  | None -> scale x (1. /. (l2_norm x))
-  | Some v -> scale ~v:v x (1. /. (l2_norm x))
+  | None -> scale (1. /. (l2_norm x)) x
+  | Some v -> scale ~v:v (1. /. (l2_norm x)) x
 
 let linearize ?v x m b =
   match v with

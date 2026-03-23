@@ -1,7 +1,7 @@
 open Ocamllib
 
 let () =
-  let features = Matrix.build 6 2 [|
+  let features = Matrix.of_array 6 2 [|
       2.; 3.;
       5.; 4.;
       9.; 6.;
@@ -10,11 +10,11 @@ let () =
       7.; 2.
     |] in
 
-  let labels = Vector.build [|
+  let labels = Vector.of_array [|
       0.; 0.; 1.; 0.; 1.; 1.
     |] in
 
-  let query = Vector.build [| 5.; 3. |] in
+  let query = Vector.of_array [| 5.; 3. |] in
 
   let prediction = Learn.Model.k_nearest_neighbors
                      features labels query 3 in

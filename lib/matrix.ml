@@ -1,192 +1,377 @@
-type t = {
-  data : float array;
-  rows : int;
-  cols : int
-}
+(* matrix.ml *)
 
-exception Mismatched_dimensions of string
+module Ld = Lacaml.D
+module Lmat = Lacaml.D.Mat
 
-let build_mat arr nrow ncol =
-  if nrow * ncol <> Array.length arr then invalid_arg "build_mat: array size doesn't match dimensions m, n";
-  { data = arr;
-    rows = nrow;
-    cols = ncol }
+type t = Ld.mat
 
-let make m n init =
-  if n < 0 then invalid_arg "Matrix.make: negative dimension n";
-  if m < 0 then invalid_arg "Matrix.make: negative dimension m";
-  build_mat (Array.make (n * m) init) n m
+let create m n =
+  Lmat.create m n
 
-let build nrow ncol arr =
-  build_mat arr nrow ncol
+let make m n k =
+  Lmat.make m n k
 
-let arr_idx mat i j =
-  i * mat.cols + j
+let init m n f =
+  Lmat.init_rows m n (fun i j -> f ((i - 1) * n + (j - 1)))
 
-let mat_idx mat i =
-  (i / mat.cols, i mod mat.cols)
+let zero m n =
+  Lmat.make0 m n
 
-let get mat i j =
-  mat.data.(arr_idx mat i j)
+let empty =
+  Lmat.empty
 
-let set mat i j x =
-  mat.data.(arr_idx mat i j) <- x
+let random ?(range = (-1.0, 1.0)) m n =
+  let from, upto = range in
+  Lmat.random ~from ~range:(upto -. from) m n
 
-let get_row mat i =
-  Vector.build (Array.sub mat.data (i * mat.cols) mat.cols)
-
-let get_col mat j =
-  Vector.build (Array.init mat.rows (fun i -> get mat i j))
-
-let rows mat =
-  mat.rows
-
-let cols mat =
-  mat.cols
-
-let zero n m =
-  make n m 0.0
-
-let diag n init =
-  let mat = make n n 0.0 in
-  for i = 0 to n-1 do
-    set mat i i init
-  done;
-  mat
+let diag n k =
+  Lmat.of_diag (Vector.make n k)
 
 let eye n =
-  diag n 1.0
+  Lmat.identity n
 
-let diag_vector vec =
-  let n = Vector.dim vec in
-  let mat = make n n 0.0 in
-  for i = 0 to n-1 do
-    (set mat i i (Vector.get vec i))
-  done;
-  mat
+let diag_rand ?(range = (-1.0, 1.0)) n =
+  Lmat.of_diag (Vector.random ~range n)
 
-let size_guard ?op a b =
-  let ra, ca = rows a, cols a in
-  let rb, cb = rows b, cols b in
-  if ra <> rb && ca <> cb then
-    raise (Mismatched_dimensions
-             (Printf.sprintf "%s: sizes %dx%d and %dx%d do not match"
-                (match op with
-                 | Some oper -> oper
-                 | None -> "_")
-                ra ca rb cb))
+let diag_init n f =
+  Lmat.of_diag (Vector.init n f)
 
-let transpose mat =
-  let mat_t = make mat.rows mat.cols 0.0 in
-  for i = 0 to mat.rows-1 do
-    for j = 0 to mat.cols-1 do
-      set mat_t j i (get mat i j)
+let get x i j =
+  x.{i + 1, j + 1}
+
+let set x i j k =
+  x.{i + 1, j + 1} <- k;
+  x
+
+let nrows x =
+  Lmat.dim1 x
+
+let ncols x =
+  Lmat.dim2 x
+
+let dims x =
+  (nrows x, ncols x)
+
+let is_empty x =
+  Lmat.has_zero_dim x
+
+let assert_match_dims x y =
+  let rx, cx = dims x in
+  let ry, cy = dims y in
+  if rx <> ry || cx <> cy then invalid_arg "dimensions don't match"
+
+let row x i =
+  Lmat.copy_row x (i + 1)
+
+let col x j =
+  Ld.copy (Lmat.col x (j + 1))
+
+let of_array r c a =
+  let n = Array.length a in
+  if n <> r * c then invalid_arg "Matrix.of_array: incompatible dimensions";
+  Lmat.init_rows r c (fun i j -> a.((i - 1) * c + (j - 1)))
+
+let to_array x =
+  let rows = Lmat.to_array x in
+  let r = Array.length rows in
+  if r = 0 then [||]
+  else
+    let c = Array.length rows.(0) in
+    Array.init (r * c) (fun k ->
+        let i = k / c in
+        let j = k mod c in
+        rows.(i).(j))
+
+let of_list r c xs =
+  of_array r c (Array.of_list xs)
+
+let to_list x =
+  Array.to_list (to_array x)
+
+let row_vecs x =
+  let r = nrows x in
+  List.init r (fun i -> row x i)
+
+let col_vecs x =
+  let c = ncols x in
+  List.init c (fun j -> col x j)
+
+let iteri f x =
+  let r, c = dims x in
+  for k = 0 to (r * c) - 1 do
+    let i = k / c in
+    let j = k mod c in
+    f k (get x i j)
+  done
+
+let iter f x =
+  iteri (fun _ xi -> f xi) x
+
+let map f ?v x =
+  match v with
+  | None -> Lmat.map f x
+  | Some v -> Lmat.map ~b:v f x
+
+let fold f init x =
+  let acc = ref init in
+  iter (fun xi -> acc := f !acc xi) x;
+  !acc
+
+let for_all f x =
+  let r, c = dims x in
+  let rec loop k =
+    if k >= (r * c) then true
+    else
+      let i = k / c in
+      let j = k mod c in
+      if not (f (get x i j)) then false
+      else loop (k + 1)
+  in
+  loop 0
+
+let iter2i f x y =
+  assert_match_dims x y;
+  let r, c = dims x in
+  for k = 0 to (r * c) - 1 do
+    let i = k / c in
+    let j = k mod c in
+    f k (get x i j) (get y i j)
+  done
+
+let iter2 f x y =
+  iter2i (fun _ xi yi -> f xi yi) x y
+
+let map2 f ?v x y =
+  assert_match_dims x y;
+  let result =
+    match v with
+    | None -> create (nrows x) (ncols x)
+    | Some v -> v
+  in
+  iter2i (fun k xi yi ->
+      let c = ncols result in
+      let i = k / c in
+      let j = k mod c in
+      ignore (set result i j (f xi yi))) x y;
+  result
+
+let fold2 f init x y =
+  assert_match_dims x y;
+  let acc = ref init in
+  iter2i (fun _ xi yi ->
+      acc := f !acc xi yi
+    ) x y;
+  !acc
+
+let for_all2 f x y =
+  assert_match_dims x y;
+  let r, c = dims x in
+  let rec loop k =
+    if k >= (r * c) then true
+    else
+      let i = k / c in
+      let j = k mod c in
+      if not (f (get x i j) (get y i j)) then false
+      else loop (k + 1)
+  in
+  loop 0
+
+let same ?(eps = 1e-9) x y =
+  let rx, cx = dims x in
+  let ry, cy = dims y in
+  if rx <> ry || cx <> cy then false
+  else for_all2 (fun xi yi -> Float.abs (xi -. yi) <= eps) x y
+
+let copy ?v x =
+  match v with
+  | None -> Lmat.map (fun xi -> xi) x
+  | Some v -> Lmat.map ~b:v (fun xi -> xi) x
+
+let vectorize ?v x =
+  match v with
+  | None -> Ld.copy (Lmat.as_vec x)
+  | Some v -> Ld.copy ~y:v (Lmat.as_vec x)
+
+let devectorize v r c =
+  if Vector.dim v <> r * c then
+    invalid_arg "Matrix.devectorize: incompatible dimensions";
+  let m = create r c in
+  ignore (Ld.copy ~y:(Lmat.as_vec m) v);
+  m
+
+let transpose ?v x =
+  match v with
+  | None -> Lmat.transpose_copy x
+  | Some v -> Lmat.transpose_copy ~b:v x
+
+let inv ?v x =
+  let r, c = dims x in
+  if r <> c then invalid_arg "Matrix.inv: non-square matrix";
+  let y = copy ?v x in
+  Ld.getri y;
+  y
+
+let trace x =
+  Lmat.trace x
+
+let perm ?v x (i, j) =
+  let y = copy ?v x in
+  let r = nrows y in
+  if i < 0 || j < 0 || i >= r || j >= r then
+    invalid_arg "Matrix.perm: row index out of bounds";
+  Lmat.swap ~m:1 ~n:(ncols y) ~ar:(i + 1) ~ac:1 y ~br:(j + 1) ~bc:1 y;
+  y
+
+let solve a b =
+  let a' = copy a in
+  let x = copy b in
+  Ld.gesv a' x;
+  x
+
+let lu x =
+  let lu = copy x in
+  let ipiv = Ld.getrf lu in
+  (lu, ipiv)
+
+let qr x =
+  let a = copy x in
+  let m, n = dims a in
+  let k = Int.min m n in
+  let tau = Ld.geqrf a in
+
+  let q = create m k in
+  for i = 0 to m - 1 do
+    for j = 0 to k - 1 do
+      ignore (set q i j (get a i j))
     done
   done;
-  mat_t
+  if k > 0 then Ld.orgqr ~m ~n:k ~k ~tau q;
 
-let of_col_vecs vec_list =
-  let ncols = List.length vec_list in
-  let nrows = Vector.dim (List.hd vec_list) in
-  let mat = make nrows ncols 0.0 in
-  List.iter (fun col ->
-      if Vector.dim col <> nrows then invalid_arg "of_col_vecs: vec_list is jagged";
-      Array.blit mat.data nrows col.data nrows ncols
-    ) vec_list;
-  transpose mat
+  let r = zero k n in
+  for i = 0 to k - 1 do
+    for j = i to n - 1 do
+      ignore (set r i j (get a i j))
+    done
+  done;
 
-let to_col_vecs mat =
-  let rec build_cols j acc =
-    if j >= mat.rows then List.rev acc
-    else
-      let col = Array.init mat.rows (fun i ->
-          get mat i j
-        ) in
-      let vec = Vector.build col in
-      build_cols (j + 1) (vec :: acc)
-  in
-  build_cols 0 []
+  (q, r)
 
-let of_row_vecs vec_list =
-  let nrows = List.length vec_list in
-  let ncols = Vector.dim (List.hd vec_list) in
-  let mat = make nrows ncols 0.0 in
-  List.iter (fun row ->
-      if Vector.dim row <> ncols then invalid_arg "of_row_vecs: vec_list is jagged";
-      Array.blit mat.data nrows row.data nrows ncols
-    ) vec_list;
-  mat
+let cholesky ?(upper = true) ?v x =
+  let y = copy ?v x in
+  Ld.potrf ~up:upper y;
+  y
 
-let to_row_vecs mat =
-  let rec build_rows i acc =
-    if i >= mat.rows then List.rev acc
-    else
-      let row = Array.sub mat.data (i * mat.cols) mat.cols in
-      let vec = Vector.build row in
-      build_rows (i + 1) (vec :: acc)
-  in
-  build_rows 0 []
+let svd ?(full = false) x =
+  let a = copy x in
+  let job = if full then `A else `S in
+  let s, u, vt = Ld.gesvd ~jobu:job ~jobvt:job a in
+  (u, s, vt)
 
-let of_array arr =
-  let nrows = Array.length arr in
-  let ncols = Array.length (Array.get arr 0) in
-  let mat = make nrows ncols 0.0 in
-  Array.iter (fun row ->
-      if Array.length row <> ncols then invalid_arg "of_array: 2d array is jagged";
-      Array.blit mat.data nrows row nrows ncols
-    ) arr;
-  mat
+let eigvals_sym ?(upper = true) x =
+  let a = copy x in
+  Ld.syev ~vectors:false ~up:upper a
 
-(* TODO *)
-(* let to_array mat = *)
-(*   let arr_mat Array.make_matrix mat.rows mat.cols 0.0 in () *)
+let eig_sym ?(upper = true) x =
+  let a = copy x in
+  let w = Ld.syev ~vectors:true ~up:upper a in
+  (w, a)
 
-let of_flat_array arr nrow ncol =
-  build_mat (Array.copy arr) nrow ncol
+let scale ?v k x =
+  let result = copy ?v x in
+  Lmat.scal k result;
+  result
 
-let to_flat_array mat =
-  Array.copy mat.data
+let recip ?v x =
+  match v with
+  | None -> Lmat.reci x
+  | Some v -> Lmat.reci ~b:v x
 
-(* TODO: rewrite as row/col *)
-let pp mat =
-  let parts = Array.to_list (Array.map string_of_float mat.data) in
-  "[" ^ String.concat "; " parts ^ "]"
+let scalar_add ?v x k =
+  match v with
+  | None -> Lmat.add_const k x
+  | Some v -> Lmat.add_const ~b:v k x
 
-let kron a b =
-  size_guard a b ~op:"kron";
-  let matrows = a.rows * a.rows in
-  let matcols = a.cols * a.cols in
-  let mat = make matrows matcols 0.0 in
-  (Array.iteri (fun ai ax ->
-       Array.iteri (fun bi bx ->
-           let ar, ac = mat_idx a ai in
-           let br, bc = mat_idx b bi in
-           let i, j = (ar * b.rows + br, ac * b.cols + bc) in
-           set mat i j (ax *. bx)
-        ) b.data
-    ) a.data);
-  mat
+let scalar_sub ?v x k =
+  match v with
+  | None -> Lmat.add_const (-.k) x
+  | Some v -> Lmat.add_const ~b:v (-.k) x
 
-let hadamard a b =
-  size_guard a b ~op:"hadamard";
-  build_mat (Array.map2 ( *. ) a.data b.data) a.cols b.cols
+let neg ?v x =
+  match v with
+  | None -> Lmat.neg x
+  | Some v -> Lmat.neg ~b:v x
 
-let same ?(epsilon=0.001) a b =
-  size_guard a b ~op:"same";
-  let rec loop i =
-    if i = (rows a) * (cols a) then true
-    else if Float.abs (a.data.(i) -. b.data.(i)) > epsilon then false
-    else loop (i+1)
-  in loop 0
+let abs ?v x =
+  match v with
+  | None -> Lmat.abs x
+  | Some v -> Lmat.abs ~b:v x
 
-let map_rows f mat =
-  List.map f (to_row_vecs mat)
+let sign ?v x =
+  match v with
+  | None -> Lmat.signum x
+  | Some v -> Lmat.signum ~b:v x
 
-let mapi_rows f mat =
-  List.mapi f (to_row_vecs mat)
+let add ?v x y =
+  match v with
+  | None -> Lmat.add x y
+  | Some v -> Lmat.add ~c:v x y
 
-let map_cols f mat =
-  List.map f (to_col_vecs mat)
+let sub ?v x y =
+  match v with
+  | None -> Lmat.sub x y
+  | Some v -> Lmat.sub ~c:v x y
 
-let mapi_cols f mat =
-  List.mapi f (to_col_vecs mat)
+let mult ?v x y =
+  match v with
+  | None -> Lmat.mul x y
+  | Some v -> Lmat.mul ~c:v x y
+
+let div ?v x y =
+  match v with
+  | None -> Lmat.div x y
+  | Some v -> Lmat.div ~c:v x y
+
+let dot x y =
+  Ld.gemm x y
+
+let kron x y =
+  let rx, cx = dims x in
+  let ry, cy = dims y in
+  let z = zero (rx * ry) (cx * cy) in
+  for i = 0 to rx - 1 do
+    for j = 0 to cx - 1 do
+      let xij = get x i j in
+      for p = 0 to ry - 1 do
+        for q = 0 to cy - 1 do
+          ignore (set z (i * ry + p) (j * cy + q) (xij *. get y p q))
+        done
+      done
+    done
+  done;
+  z
+
+let hadamard ?v x y =
+  mult ?v x y
+
+let sum_rows x =
+  let r, c = dims x in
+  if c = 0 then Vector.zero r
+  else Ld.gemv x (Vector.make c 1.0)
+
+let sum_cols x =
+  let r, c = dims x in
+  if r = 0 then Vector.zero c
+  else Ld.gemv ~trans:`T x (Vector.make r 1.0)
+
+let mean_rows x =
+  let _, c = dims x in
+  if c = 0 then sum_rows x
+  else Vector.scale (1.0 /. Float.of_int c) (sum_rows x)
+
+let mean_cols x =
+  let r, _ = dims x in
+  if r = 0 then sum_cols x
+  else Vector.scale (1.0 /. Float.of_int r) (sum_cols x)
+
+let pp (x : t) =
+  Format.printf "%a@." (Lacaml.Io.pp_lfmat ()) x

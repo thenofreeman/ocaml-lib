@@ -61,7 +61,7 @@ val div : ?v:t -> t -> t -> t
 val dot : t -> t -> float
 
 (* unary transforms *)
-val scale : ?v:t -> t -> float -> t
+val scale : ?v:t -> float -> t -> t
 val recip : ?v:t -> t -> t
 val scalar_add: ?v:t -> t -> float -> t
 val scalar_sub: ?v:t -> t -> float -> t

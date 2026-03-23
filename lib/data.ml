@@ -6,7 +6,7 @@ module Manip = struct
     (x1_2, x2_2, x1x2 *. Const.sqrt2)
 
   let rbf_kernel ~gamma x1 x2 =
-    exp (gamma *. (Vector.sub x1 x2 |> Vector.l2Norm))
+    exp (gamma *. (Vector.sub x1 x2 |> Vector.l2_norm))
 
   let normalize xs =
     let max = Vector.max xs in

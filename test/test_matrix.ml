@@ -26,9 +26,9 @@ end
 let test_mat = "matrix test suite" >::: [
     (* binary operations *)
     MatrixTest.Make.binary_oper_test "kron_equals" ~oper:Matrix.kron
-      (Matrix.build 2 2 [| 1.; 2.; 3.; 4. |])
-      (Matrix.build 2 2 [| 0.; 5.; 6.; 7. |])
-      (Matrix.build 4 4 [| 0.;  5.;  0.; 10.;
+      (Matrix.of_array 2 2 [| 1.; 2.; 3.; 4. |])
+      (Matrix.of_array 2 2 [| 0.; 5.; 6.; 7. |])
+      (Matrix.of_array 4 4 [| 0.;  5.;  0.; 10.;
                            6.;  7.; 12.; 14.;
                            0.; 15.;  0.; 20.;
                           18.; 21.; 24.; 28. |]);
