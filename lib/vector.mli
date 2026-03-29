@@ -1,10 +1,6 @@
 (* vector.mli *)
 
 type t = Lacaml.D.vec
-(* type b_transform = t -> ?ip -> t -> t *)
-(* type b_reduction = t -> float *)
-(* type u_transform = t -> ?ip -> t *)
-(* type u_reduction = t -> float *)
 
 val create : int -> t
 val make : int -> float -> t

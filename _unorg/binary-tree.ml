@@ -9,7 +9,7 @@ let rec list_of_tree = function
 
 let rec insert x = function
   | Leaf -> Node (Leaf, x, Leaf)
-  | Node (lb, r rb) ->
+  | Node (lb, r, rb) ->
      if x < r then Node (insert x lb, r, rb)
      else Node (lb, r, insert x rb);;
 

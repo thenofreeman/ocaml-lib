@@ -1,18 +1,117 @@
 #+title: OCaml Lib
 
-- Vector
-- Matrix
+* Contents :toc:
+- [[#library][Library]]
+  - [[#maths][Maths]]
+  - [[#collection-types][Collection Types]]
+  - [[#list-operations][List Operations]]
+- [[#examples][Examples]]
+- [[#todo][todo]]
+
+* Library
+
+** Maths
+
+- [[file:lib/const.ml][Constants]]
+- [[file:lib/vector.mli][Vector]] (impl, tests)
+- [[file:lib/matrix.mli][Matrix]] (impl, tests)
 - Math
 - Basic Machine Learning
+
+** Collection Types
+
+*** Sequential Types
+
+- Dynamic Array / Array List
+- Circular Array
+- Linked List
+- Doubly-Linked List
+- Selection List
+- Stack
+- Queue
+
+*** Trees
+
+- Binary Search Tree
+- M-ary Tree
+- B Tree
+- B+ Tree
+- RB Tree
+- Heap / Priority Queue
+- Trie
+
+*** Associative Types
+
+- Set
+- Hash Table
+
+** List Operations
+
+*** Predicates
+
+- Is Sorted
+- Is Permutation
+
+*** Searching
+
+- Linear Search
+- Binary Search
+- Min Value
+- Max Value
+
+*** Sorting
+
+- [[file:lib/sort/insertion_sort.ml][Insertion Sort]]
+- Bubble Sort
+- Selection Sort
+- Heap Sort
+- Intro Sort
+- Merge Sort
+- Tourny Sort
+- Tree Sort
+- Block Sort
+- Smooth Sort
+- Tim Sort
+- Patience Sort
+- Cube Sort
+- Quick Sort
+- Flux Sort
+- Crum Sort
+- Library Sort
+- Shell Sort
+- Comb Sort
+- Cocktail Sort
+- Gnome Sort
+- Odd-Even Sort
+- Strand Sort
+- Cycle Sort
+- Pigeonhole Sort
+- Bucket Sort
+- Bucket_uniform Sort
+- Counting Sort
+- Radix (lsd) Sort
+- Radix (msd) Sort
+- Spread Sort
+- Burst Sort
+- Flash Sort
+- Postman Sort
+- Bead Sort
+- Merge_insert Sort
+- Spaghetti Sort
+- Network Sort
+- Bitonic Sort
+- Bogo Sort
+- Stooge Sort
+- Slow Sort
+
+* Examples
+
+- FizzBuzz
 
 * todo
 
 - BinaryTree
   - Binary Tree ([[file:code/dsa-ocaml/binary-tree.ml][ocaml]])
-- BTree
-- B+Tree
-- RBTree
-- MTree (nAry Tree?????)
 - Sort
   - Bubble Sort
   - Shell Sort
@@ -25,12 +124,6 @@
   - Linear Search
   - Binary Search
   - Quickselect (ocaml)
-- Stack
-- Queue
-- CircularArray
-- Selection List
-- Doubly-Linked List
-- Array List
 
 mahalanobis_dist
 hamming_dist
