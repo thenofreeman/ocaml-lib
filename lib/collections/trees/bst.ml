@@ -1,7 +1,6 @@
-
-type 'a binary_tree =
+type 'a bst =
   | Leaf
-  | Node of 'a binary_tree * 'a * 'a binary_tree;;
+  | Node of 'a bst * 'a * 'a bst;;
 
 let rec list_of_tree = function
   | Leaf -> []

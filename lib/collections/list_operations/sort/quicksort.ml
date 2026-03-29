@@ -1,3 +1,5 @@
+(* Quicksort.ml *)
+
 let quicksort arr =
   let rec quicksort arr p r =
     let select_pivot arr p r = arr.(r) in
@@ -29,18 +31,10 @@ let quicksort arr =
       quicksort arr (pivot+1) r
 
   in quicksort arr 0 (Array.length arr - 1)
-;;
 
-(* example *)
+let#test "Quicksort" =
+    let arr = [| 1; 5; 3; 6; 2; 9; 1 |] in
+    let arr_sorted = Array.copy arr in
 
-let arr = [| 1; 5; 3; 6; 2; 9; 1 |];;
-
-let print_arr arr =
-  Array.iter (fun x -> print_int x; print_string " ") arr;
-  print_newline ();;
-
-Printf.printf "%d\n" (Array.length arr);
-
-print_arr arr;
-quicksort arr;
-print_arr arr
+    quicksort arr_sorted;
+    Array.equal arr arr_sorted

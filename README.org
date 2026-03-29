@@ -6,8 +6,8 @@
   - [[#collection-types][Collection Types]]
   - [[#list-operations][List Operations]]
 - [[#examples][Examples]]
-  - [[#machine-learning][Machine Learning]]
   - [[#toy-problems][Toy Problems]]
+  - [[#machine-learning][Machine Learning]]
 - [[#todo][todo]]
 
 * Library
@@ -15,8 +15,8 @@
 ** Maths
 
 - [[file:lib/const.ml][Constants]]
-- [[file:lib/vector.mli][Vector]] (impl, tests)
-- [[file:lib/matrix.mli][Matrix]] (impl, tests)
+- [[file:lib/vector.ml][Vector]] ([[file:lib/vector.mli][sig]], tests)
+- [[file:lib/matrix.ml][Matrix]] ([[file:lib/matrix.mli][sig]], tests)
 - Math
 - Basic Machine Learning
 
@@ -24,89 +24,94 @@
 
 *** Sequential Types
 
-- Dynamic Array / Array List
-- Circular Array
-- Linked List
-- Doubly-Linked List
-- Selection List
-- Stack
-- Queue
+- Dynamic Array (sig, tests)
+- Circular Array (sig, tests)
+- Linked List (sig, tests)
+- Doubly-Linked List (sig, tests)
+- Selection List (sig, tests)
+- Stack (sig, tests)
+- Queue (sig, tests)
 
 *** Trees
 
-- Binary Search Tree
-- M-ary Tree
-- B Tree
-- B+ Tree
-- RB Tree
-- Heap / Priority Queue
-- Trie
+- [[file:lib/collections/trees/bst.ml][Binary Search Tree]] ([[file:lib/collections/trees/bst.mli][sig]], tests)
+- M-ary Tree (sig, tests)
+- B Tree (sig, tests)
+- B+ Tree (sig, tests)
+- RB Tree (sig, tests)
+- Heap / Priority Queue (sig, tests)
+- Trie (sig, tests)
 
 *** Associative Types
 
-- Set
-- Hash Table
+- Set (sig, tests)
+- Hash Table (sig, tests)
 
 ** List Operations
 
 *** Predicates
 
-- Is Sorted
-- Is Permutation
+- Is Sorted (tests)
+- Is Permutation (tests)
 
 *** Searching
 
-- Linear Search
-- Binary Search
-- Min Value
-- Max Value
+- Linear Search (tests)
+- Binary Search (tests)
+- Min Value (tests)
+- Max Value (tests)
+- Quick Select (tests)
 
 *** Sorting
 
-- [[file:lib/sort/insertion_sort.ml][Insertion Sort]]
-- Bubble Sort
-- Selection Sort
-- Heap Sort
-- Intro Sort
-- Merge Sort
-- Tourny Sort
-- Tree Sort
-- Block Sort
-- Smooth Sort
-- Tim Sort
-- Patience Sort
-- Cube Sort
-- Quick Sort
-- Flux Sort
-- Crum Sort
-- Library Sort
-- Shell Sort
-- Comb Sort
-- Cocktail Sort
-- Gnome Sort
-- Odd-Even Sort
-- Strand Sort
-- Cycle Sort
-- Pigeonhole Sort
-- Bucket Sort
-- Bucket_uniform Sort
-- Counting Sort
-- Radix (lsd) Sort
-- Radix (msd) Sort
-- Spread Sort
-- Burst Sort
-- Flash Sort
-- Postman Sort
-- Bead Sort
-- Merge_insert Sort
-- Spaghetti Sort
-- Network Sort
-- Bitonic Sort
-- Bogo Sort
-- Stooge Sort
-- Slow Sort
+- [[file:lib/sort/insertion_sort.ml][Insertion Sort]] (tests)
+- Bubble Sort (tests)
+- Selection Sort (tests)
+- Heap Sort (tests)
+- Intro Sort (tests)
+- Merge Sort (tests)
+- Tourny Sort (tests)
+- Tree Sort (tests)
+- Block Sort (tests)
+- Smooth Sort (tests)
+- Tim Sort (tests)
+- Patience Sort (tests)
+- Cube Sort (tests)
+- [[file:lib/collections/list_operations/sort/quicksort.ml][Quick Sort]] (tests)
+- Flux Sort (tests)
+- Crum Sort (tests)
+- Library Sort (tests)
+- Shell Sort (tests)
+- Comb Sort (tests)
+- Cocktail Sort (tests)
+- Gnome Sort (tests)
+- Odd-Even Sort (tests)
+- Strand Sort (tests)
+- Cycle Sort (tests)
+- Pigeonhole Sort (tests)
+- Bucket Sort (tests)
+- Bucket_uniform Sort (tests)
+- Counting Sort (tests)
+- Radix (lsd) Sort (tests)
+- Radix (msd) Sort (tests)
+- Spread Sort (tests)
+- Burst Sort (tests)
+- Flash Sort (tests)
+- Postman Sort (tests)
+- Bead Sort (tests)
+- Merge_insert Sort (tests)
+- Spaghetti Sort (tests)
+- Network Sort (tests)
+- Bitonic Sort (tests)
+- Bogo Sort (tests)
+- Stooge Sort (tests)
+- Slow Sort (tests)
 
 * Examples
+
+** Toy Problems
+
+- [[file:example/fizzbuzz.ml][FizzBuzz]]
 
 ** Machine Learning
 
@@ -114,26 +119,9 @@
 - [[file:example/knn_mnist.ml][Mnist k-Nearest-Neighbors Classification]]
 - [[file:example/linear_regression.ml][Linear Regression Prediction]]
 
-** Toy Problems
-
-- [[file:example/fizzbuzz.ml][FizzBuzz]]
-
 * todo
 
-- BinaryTree
-  - Binary Tree ([[file:code/dsa-ocaml/binary-tree.ml][ocaml]])
-- Sort
-  - Bubble Sort
-  - Shell Sort
-  - Insertion Sort ([[file:code/dsa-ocaml/insertion_sort.ml][ocaml]])
-  - Selection Sort
-  - Merge Sort
-  - Quicksort ([[file:code/dsa-ocaml/quicksort.ml][ocaml]])
-  - Radix Sort
-- Search-type algos?
-  - Linear Search
-  - Binary Search
-  - Quickselect (ocaml)
+black-scholes
 
 mahalanobis_dist
 hamming_dist
