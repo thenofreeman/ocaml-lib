@@ -13,4 +13,5 @@ let print_fizzbuzz n =
   List.iter (Printf.printf "%s\n") (build_fizzbuzz 100 [])
 ;;
 
-print_fizzbuzz 100;;
+let () =
+    print_fizzbuzz 100;;

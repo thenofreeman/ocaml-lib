@@ -6,6 +6,8 @@
   - [[#collection-types][Collection Types]]
   - [[#list-operations][List Operations]]
 - [[#examples][Examples]]
+  - [[#machine-learning][Machine Learning]]
+  - [[#toy-problems][Toy Problems]]
 - [[#todo][todo]]
 
 * Library
@@ -106,7 +108,15 @@
 
 * Examples
 
-- FizzBuzz
+** Machine Learning
+
+- [[file:example/knn_simple.ml][k-Nearest-Neighbors on Sample Data]]
+- [[file:example/knn_mnist.ml][Mnist k-Nearest-Neighbors Classification]]
+- [[file:example/linear_regression.ml][Linear Regression Prediction]]
+
+** Toy Problems
+
+- [[file:example/fizzbuzz.ml][FizzBuzz]]
 
 * todo
 
