@@ -32,7 +32,7 @@
 - Stack (sig, tests)
 - Queue (sig, tests)
 
-*** Trees
+*** Graphs and Trees
 
 - [[file:lib/collections/trees/bst.ml][Binary Search Tree]] ([[file:lib/collections/trees/bst.mli][sig]], tests)
 - M-ary Tree (sig, tests)
@@ -41,6 +41,8 @@
 - RB Tree (sig, tests)
 - Heap / Priority Queue (sig, tests)
 - Trie (sig, tests)
+- [[file:lib/collections/graphs/graph.ml][Graph]] (sig, tests)
+- DiGraph (sig, tests)
 
 *** Associative Types
 
